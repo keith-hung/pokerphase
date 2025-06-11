@@ -11,9 +11,6 @@
         <!-- Header -->
         <header class="header">
             <h1>PokerPhase</h1>
-            <div class="participants-count">
-                <span id="participantsCount">0 participants</span>
-            </div>
         </header>
         
         <!-- Welcome Screen -->
@@ -46,28 +43,42 @@
         <div id="gameScreen" class="game-screen" style="display: none;">
             <!-- Participants List -->
             <div class="participants-panel">
-                <h3>參與者</h3>
+                <div class="participants-header">
+                    <h3>參與者</h3>
+                    <div class="participants-count">
+                        <span id="participantsCount">0 participants</span>
+                    </div>
+                </div>
                 <div id="participantsList" class="participants-list">
                     <!-- Participants will be added dynamically -->
+                </div>
+                
+                <!-- Projectile Selector -->
+                <div class="projectile-selector">
+                    <h4>投擲物選擇</h4>
+                    <div class="projectile-options">
+                        <div class="projectile-option active" data-type="boomerang" title="迴力鏢">
+                            <span class="projectile-icon">🪃</span>
+                        </div>
+                        <div class="projectile-option" data-type="rocket" title="火箭">
+                            <span class="projectile-icon">🚀</span>
+                        </div>
+                        <div class="projectile-option" data-type="stone" title="隕石">
+                            <span class="projectile-icon">🪨</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <!-- Main Content -->
             <div class="main-content">
-                <!-- Current Issue -->
-                <div class="current-issue">
-                    <h3>當前議題</h3>
-                    <div id="currentIssue" class="issue-card">
-                        <span class="issue-title">準備估算第一個故事</span>
-                    </div>
-                </div>
-                
                 <!-- Voting Cards -->
                 <div class="voting-section">
                     <h3>選擇您的估算</h3>
                     <div class="cards-container" id="cardsContainer">
                         <!-- Fibonacci sequence cards -->
                         <div class="card" data-value="0">0</div>
+                        <div class="card" data-value="1/2">½</div>
                         <div class="card" data-value="1">1</div>
                         <div class="card" data-value="2">2</div>
                         <div class="card" data-value="3">3</div>
@@ -76,6 +87,7 @@
                         <div class="card" data-value="13">13</div>
                         <div class="card" data-value="21">21</div>
                         <div class="card" data-value="?">?</div>
+                        <div class="card" data-value="🚻">🚻</div>
                     </div>
                 </div>
                 
@@ -84,7 +96,14 @@
                     <div id="votingProgress" class="voting-progress">
                         <span>等待所有人投票...</span>
                     </div>
-                    <button id="revealBtn" class="btn btn-primary" style="display: none;">揭示結果</button>
+                </div>
+                
+                <!-- Boomerang Throw Notifications -->
+                <div id="paperBallNotification" class="paper-ball-notification" style="display: none;">
+                    <div class="paper-ball-content">
+                        <div class="paper-ball-icon">🪃💥</div>
+                        <div class="paper-ball-message"></div>
+                    </div>
                 </div>
                 
                 <!-- Results -->
@@ -93,10 +112,7 @@
                     <div id="resultsContainer" class="results-container">
                         <!-- Results will be displayed here -->
                     </div>
-                    <div class="results-actions">
-                        <button id="revoteBtn" class="btn btn-secondary">重新投票</button>
-                        <button id="nextIssueBtn" class="btn btn-primary">下一議題</button>
-                    </div>
+                    <!-- Results actions moved to room-controls for better organization -->
                 </div>
             </div>
             
@@ -105,6 +121,12 @@
                 <div class="room-id">
                     房間 ID: <span id="currentRoomId"></span>
                     <button id="copyRoomLinkBtn" class="btn btn-small">複製連結</button>
+                </div>
+                <div class="room-controls">
+                    <button id="claimHostBtn" class="btn btn-warning" style="display: none;">奪取主持人</button>
+                    <button id="revealBtn" class="btn btn-primary" style="display: none;">揭示結果</button>
+                    <button id="revoteBtn" class="btn btn-secondary" style="display: none;">重新投票</button>
+                    <button id="nextIssueBtn" class="btn btn-primary" style="display: none;">下一議題</button>
                 </div>
             </div>
         </div>
