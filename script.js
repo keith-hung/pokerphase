@@ -306,8 +306,8 @@ class PlanningPoker {
             this.updateResults();
         }
         
-        // Update claim host button visibility
-        this.updateClaimHostButton();
+        // Update all host-related buttons whenever host status might have changed
+        this.updateAllHostButtons();
         
         // Update last state
         this.lastUIState = currentState;
@@ -388,14 +388,48 @@ class PlanningPoker {
         }
     }
 
-    updateClaimHostButton() {
+    updateAllHostButtons() {
+        // Update claim host button
         const claimHostBtn = document.getElementById('claimHostBtn');
+        const revealBtn = document.getElementById('revealBtn');
+        const revoteBtn = document.getElementById('revoteBtn');
+        const nextIssueBtn = document.getElementById('nextIssueBtn');
         
-        // Show button only if user is in a room and is not the host
+        // Show claim host button only if user is in a room and is not the host
         if (this.currentRoom && this.currentUser && !this.isHost) {
             claimHostBtn.style.display = 'inline-block';
         } else {
             claimHostBtn.style.display = 'none';
+        }
+        
+        // Update voting control buttons based on current state
+        if (this.isHost) {
+            // Handle reveal button based on voting state
+            if (this.votesRevealed) {
+                revealBtn.style.display = 'none';
+                revoteBtn.style.display = 'inline-block';
+                nextIssueBtn.style.display = 'inline-block';
+            } else if (this.allParticipantsVoted()) {
+                revealBtn.style.display = 'inline-block';
+                revealBtn.textContent = '揭示結果';
+                revoteBtn.style.display = 'none';
+                nextIssueBtn.style.display = 'none';
+            } else {
+                const votedCount = Array.from(this.participants.values()).filter(p => p.hasVoted).length;
+                if (votedCount > 0) {
+                    revealBtn.style.display = 'inline-block';
+                    revealBtn.textContent = '強制開票';
+                } else {
+                    revealBtn.style.display = 'none';
+                }
+                revoteBtn.style.display = 'none';
+                nextIssueBtn.style.display = 'none';
+            }
+        } else {
+            // Non-host users should not see any host controls
+            revealBtn.style.display = 'none';
+            revoteBtn.style.display = 'none';
+            nextIssueBtn.style.display = 'none';
         }
     }
 
@@ -403,21 +437,13 @@ class PlanningPoker {
 
     updateVotingStatus() {
         const progressElement = document.getElementById('votingProgress');
-        const revealBtn = document.getElementById('revealBtn');
         const resultsSection = document.getElementById('resultsSection');
         
         if (this.votesRevealed) {
             progressElement.textContent = '';
-            revealBtn.style.display = 'none';
             resultsSection.style.display = 'block';
         } else if (this.allParticipantsVoted()) {
             progressElement.textContent = '所有人已投票，可以揭示結果';
-            if (this.isHost) {
-                revealBtn.style.display = 'inline-block';
-                revealBtn.textContent = '揭示結果';
-            } else {
-                revealBtn.style.display = 'none';
-            }
             resultsSection.style.display = 'none';
         } else {
             const votedCount = Array.from(this.participants.values()).filter(p => p.hasVoted).length;
@@ -425,22 +451,10 @@ class PlanningPoker {
             
             if (votedCount > 0) {
                 progressElement.textContent = `投票中... (${votedCount}/${totalCount}) - 主持人可強制開票`;
-                if (this.isHost) {
-                    revealBtn.style.display = 'inline-block';
-                    revealBtn.textContent = '強制開票';
-                } else {
-                    revealBtn.style.display = 'none';
-                }
             } else {
                 progressElement.textContent = `等待投票中... (${votedCount}/${totalCount})`;
-                revealBtn.style.display = 'none';
             }
             resultsSection.style.display = 'none';
-        }
-        
-        // Ensure non-host users don't see host-only buttons
-        if (!this.isHost) {
-            revealBtn.style.display = 'none';
         }
     }
 
@@ -507,17 +521,7 @@ class PlanningPoker {
             container.appendChild(item);
         });
         
-        // Update action buttons visibility (only host can see them)
-        const revoteBtn = document.getElementById('revoteBtn');
-        const nextIssueBtn = document.getElementById('nextIssueBtn');
-        
-        if (this.isHost) {
-            revoteBtn.style.display = 'inline-block';
-            nextIssueBtn.style.display = 'inline-block';
-        } else {
-            revoteBtn.style.display = 'none';
-            nextIssueBtn.style.display = 'none';
-        }
+        // Button visibility is now handled by updateAllHostButtons()
     }
 
     async selectCard(value) {
