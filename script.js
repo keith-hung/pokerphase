@@ -349,6 +349,11 @@ class PlanningPoker {
                 item.classList.add('host');
             }
             
+            // Highlight current user's own participant item
+            if (this.currentUser && participant.id === this.currentUser.id) {
+                item.classList.add('self');
+            }
+            
             // Check if boomerang can be thrown
             // Anyone can throw to non-voters, hosts can throw to anyone (except themselves)
             // When all voted but not revealed, anyone can throw to host
@@ -836,9 +841,11 @@ class PlanningPoker {
         return null;
     }
 
-    showProjectileAnimation(event, targetElement, projectileType = 'boomerang') {
-        // Find the thrower's element (current user) in the participant list
-        const throwerElement = this.findParticipantElement(this.currentUser.name);
+    showProjectileAnimation(event, targetElement, projectileType = 'boomerang', throwerElement = null) {
+        // Use provided thrower element or find the current user's element
+        if (!throwerElement) {
+            throwerElement = this.findParticipantElement(this.currentUser.name);
+        }
         
         // Get starting position from thrower's div center
         let startX, startY;
@@ -901,27 +908,70 @@ class PlanningPoker {
         let keyframes, animationName, duration;
 
         if (projectileType === 'boomerang') {
-            // Elliptical boomerang path
-            const flightWidth = screenWidth * 0.4;
-            const flightHeight = screenWidth * 0.2;
+            // Spiral boomerang path from thrower to target
+            const deltaX = targetX - startX;
+            const deltaY = targetY - startY;
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
             
-            const generateEllipticalPath = () => {
+            const generateSpiralPath = () => {
                 const points = [];
-                const steps = 20;
+                const steps = 30;
+                const screenWidth = window.innerWidth;
+                
+                // Calculate maximum spiral extension (1/2 to 2/3 of screen width from left)
+                const maxSpiralX = screenWidth * (Math.random() * 0.17 + 0.5); // Random between 0.5 and 0.67
+                const spiralPeakProgress = 0.6; // Peak of spiral at 60% of journey
+                
+                // Spiral parameters
+                const spiralTurns = 2; // Number of spiral turns
+                const maxSpiralRadius = Math.min(distance * 0.4, 120); // Maximum spiral radius
                 
                 for (let i = 0; i <= steps; i++) {
-                    const t = (i / steps) * Math.PI;
                     const progress = i / steps;
                     
-                    const ellipseX = flightWidth * Math.cos(t);
-                    const ellipseY = -flightHeight * Math.sin(t);
+                    // Create a trajectory that goes out to the spiral peak, then comes back to target
+                    let trajectoryX, trajectoryY;
                     
-                    const blendFactor = progress > 0.8 ? (progress - 0.8) / 0.2 : 0;
-                    const finalX = ellipseX * (1 - blendFactor) + (targetX - startX) * blendFactor;
-                    const finalY = ellipseY * (1 - blendFactor) + (targetY - startY) * blendFactor;
+                    if (progress <= spiralPeakProgress) {
+                        // First phase: spiral outward toward peak
+                        const phaseProgress = progress / spiralPeakProgress;
+                        const peakX = maxSpiralX - startX; // Relative to start position
+                        const peakY = deltaY * spiralPeakProgress; // Y progression toward target
+                        
+                        trajectoryX = deltaX * phaseProgress * 0.3 + peakX * phaseProgress;
+                        trajectoryY = peakY * phaseProgress;
+                    } else {
+                        // Second phase: spiral inward toward target
+                        const phaseProgress = (progress - spiralPeakProgress) / (1 - spiralPeakProgress);
+                        const peakX = maxSpiralX - startX;
+                        const peakY = deltaY * spiralPeakProgress;
+                        
+                        trajectoryX = peakX + (deltaX - peakX) * phaseProgress;
+                        trajectoryY = peakY + (deltaY - peakY) * phaseProgress;
+                    }
                     
-                    const rotation = progress * 2880;
-                    const scale = 1 + Math.sin(progress * Math.PI) * 0.3;
+                    // Add spiral motion
+                    const spiralProgress = progress * spiralTurns * 2 * Math.PI;
+                    let spiralIntensity;
+                    
+                    if (progress <= spiralPeakProgress) {
+                        spiralIntensity = (progress / spiralPeakProgress) * maxSpiralRadius;
+                    } else {
+                        spiralIntensity = maxSpiralRadius * (1 - (progress - spiralPeakProgress) / (1 - spiralPeakProgress));
+                    }
+                    
+                    // Calculate perpendicular direction for spiral
+                    const perpX = -deltaY / distance;
+                    const perpY = deltaX / distance;
+                    
+                    const spiralOffsetX = Math.cos(spiralProgress) * spiralIntensity * perpX;
+                    const spiralOffsetY = Math.cos(spiralProgress) * spiralIntensity * perpY;
+                    
+                    const finalX = trajectoryX + spiralOffsetX;
+                    const finalY = trajectoryY + spiralOffsetY;
+                    
+                    const rotation = progress * 2880; // 8 full rotations
+                    const scale = 1 + Math.sin(progress * Math.PI * 3) * 0.25; // Pulsing effect
                     
                     points.push({
                         x: finalX, y: finalY, rotation: rotation, scale: scale,
@@ -931,7 +981,7 @@ class PlanningPoker {
                 return points;
             };
 
-            const pathPoints = generateEllipticalPath();
+            const pathPoints = generateSpiralPath();
             let keyframesContent = '';
             pathPoints.forEach(point => {
                 keyframesContent += `${point.percent}% {
@@ -939,9 +989,9 @@ class PlanningPoker {
                 }`;
             });
 
-            keyframes = `@keyframes boomerangEllipse { ${keyframesContent} }`;
-            animationName = 'boomerangEllipse';
-            duration = '1.2s';
+            keyframes = `@keyframes boomerangSpiral { ${keyframesContent} }`;
+            animationName = 'boomerangSpiral';
+            duration = '1.4s';
             
         } else if (projectileType === 'rocket') {
             // Rocket path: thrower center → 3/4 screen width → target center
@@ -1136,8 +1186,8 @@ class PlanningPoker {
                         clientY: throwerElement.getBoundingClientRect().top + throwerElement.getBoundingClientRect().height / 2
                     };
                     
-                    // Play the animation for all clients
-                    this.showProjectileAnimation(syntheticEvent, targetElement, animation.projectileType);
+                    // Play the animation for all clients with correct thrower element
+                    this.showProjectileAnimation(syntheticEvent, targetElement, animation.projectileType, throwerElement);
                 } else {
                     console.warn(`Could not find elements for animation: thrower=${!!throwerElement}, target=${!!targetElement}`);
                     console.warn(`Thrower name: "${animation.fromUserName}", Target name: "${animation.targetUserName}"`);
