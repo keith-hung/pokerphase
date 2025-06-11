@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokerPhase - 敏捷估算工具</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>PokerPhase</h1>
+            <div class="participants-count">
+                <span id="participantsCount">0 participants</span>
+            </div>
+        </header>
+        
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="welcome-screen">
+            <div class="welcome-content">
+                <h2>歡迎使用 PokerPhase</h2>
+                <p>敏捷團隊的故事點估算工具</p>
+                <div class="welcome-actions">
+                    <button id="createRoomBtn" class="btn btn-primary">建立新房間</button>
+                    <div class="join-room">
+                        <input type="text" id="roomIdInput" placeholder="輸入房間 ID">
+                        <button id="joinRoomBtn" class="btn btn-secondary">加入房間</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Name Input Modal -->
+        <div id="nameModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3>請輸入您的姓名</h3>
+                <input type="text" id="userNameInput" placeholder="姓名" maxlength="20">
+                <div class="modal-actions">
+                    <button id="confirmNameBtn" class="btn btn-primary">確認</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Game Screen -->
+        <div id="gameScreen" class="game-screen" style="display: none;">
+            <!-- Participants List -->
+            <div class="participants-panel">
+                <h3>參與者</h3>
+                <div id="participantsList" class="participants-list">
+                    <!-- Participants will be added dynamically -->
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Current Issue -->
+                <div class="current-issue">
+                    <h3>當前議題</h3>
+                    <div id="currentIssue" class="issue-card">
+                        <span class="issue-title">準備估算第一個故事</span>
+                    </div>
+                </div>
+                
+                <!-- Voting Cards -->
+                <div class="voting-section">
+                    <h3>選擇您的估算</h3>
+                    <div class="cards-container" id="cardsContainer">
+                        <!-- Fibonacci sequence cards -->
+                        <div class="card" data-value="0">0</div>
+                        <div class="card" data-value="1">1</div>
+                        <div class="card" data-value="2">2</div>
+                        <div class="card" data-value="3">3</div>
+                        <div class="card" data-value="5">5</div>
+                        <div class="card" data-value="8">8</div>
+                        <div class="card" data-value="13">13</div>
+                        <div class="card" data-value="21">21</div>
+                        <div class="card" data-value="?">?</div>
+                    </div>
+                </div>
+                
+                <!-- Voting Status -->
+                <div class="voting-status">
+                    <div id="votingProgress" class="voting-progress">
+                        <span>等待所有人投票...</span>
+                    </div>
+                    <button id="revealBtn" class="btn btn-primary" style="display: none;">揭示結果</button>
+                </div>
+                
+                <!-- Results -->
+                <div id="resultsSection" class="results-section" style="display: none;">
+                    <h3>投票結果</h3>
+                    <div id="resultsContainer" class="results-container">
+                        <!-- Results will be displayed here -->
+                    </div>
+                    <div class="results-actions">
+                        <button id="revoteBtn" class="btn btn-secondary">重新投票</button>
+                        <button id="nextIssueBtn" class="btn btn-primary">下一議題</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Room Info -->
+            <div class="room-info">
+                <div class="room-id">
+                    房間 ID: <span id="currentRoomId"></span>
+                    <button id="copyRoomLinkBtn" class="btn btn-small">複製連結</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
