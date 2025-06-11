@@ -208,6 +208,7 @@ body {
     gap: 20px;
     height: calc(100vh - 120px); /* Adjust based on header height */
     overflow: hidden;
+    max-height: calc(100vh - 120px); /* Prevent vertical overflow */
 }
 
 /* Participants Panel */
@@ -252,6 +253,8 @@ body {
     flex: 1;
     overflow-y: auto;
     margin-bottom: 15px;
+    min-height: 0; /* Allow flexbox shrinking */
+    max-height: calc(100vh - 350px); /* Ensure it doesn't exceed available space */
 }
 
 .participant-item {
@@ -363,7 +366,7 @@ body {
     backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
     overflow-y: auto;
     max-height: 100%;
 }
@@ -392,7 +395,7 @@ body {
 /* Voting Section */
 .voting-section h3 {
     color: #2d3748;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-size: 1.3rem;
     font-weight: 600;
     text-align: center;
@@ -403,7 +406,7 @@ body {
     grid-template-columns: repeat(6, 1fr);
     justify-content: center;
     gap: 15px;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     max-width: 680px;
     margin-left: auto;
     margin-right: auto;
@@ -450,7 +453,7 @@ body {
 /* Voting Status */
 .voting-status {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
 }
 
 /* Projectile Selector */
@@ -459,15 +462,9 @@ body {
     padding-top: 15px;
     border-top: 1px solid #e2e8f0;
     flex-shrink: 0;
+    min-height: 60px; /* Fixed height for projectile selector */
 }
 
-.projectile-selector h4 {
-    color: #2d3748;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 10px;
-    text-align: center;
-}
 
 .projectile-options {
     display: flex;
@@ -714,7 +711,7 @@ body {
 
 .results-section h3 {
     color: #2d3748;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-size: 1.3rem;
     font-weight: 600;
     text-align: center;
@@ -875,6 +872,12 @@ body {
     
     .participants-panel {
         order: -1;
+        max-height: 200px; /* Limit height on mobile */
+        overflow: hidden;
+    }
+    
+    .participants-list {
+        max-height: calc(200px - 120px); /* Account for header and projectile selector */
     }
     
     .cards-container {
