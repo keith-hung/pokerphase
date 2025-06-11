@@ -293,6 +293,43 @@ body {
     background: #ebf4ff;
 }
 
+.participant-item.self {
+    border-left-color: #38b2ac;
+    background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+    box-shadow: 0 2px 12px rgba(56, 178, 172, 0.3);
+    border: 2px solid rgba(56, 178, 172, 0.2);
+    border-left: 4px solid #38b2ac;
+}
+
+.participant-item.self .participant-name {
+    color: #234e52;
+    font-weight: 600;
+}
+
+.participant-item.self .participant-status {
+    background: #81e6d9;
+    color: #234e52;
+}
+
+/* Combined styles for self + host */
+.participant-item.self.host {
+    border-left-color: #805ad5;
+    background: linear-gradient(135deg, #faf5ff 0%, #e9d8fd 100%);
+    box-shadow: 0 2px 12px rgba(128, 90, 213, 0.3);
+    border: 2px solid rgba(128, 90, 213, 0.2);
+    border-left: 4px solid #805ad5;
+}
+
+.participant-item.self.host .participant-name {
+    color: #44337a;
+    font-weight: 700;
+}
+
+.participant-item.self.host .participant-status {
+    background: #d6bcfa;
+    color: #44337a;
+}
+
 .participant-name {
     font-weight: 500;
     color: #2d3748;
