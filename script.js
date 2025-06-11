@@ -337,7 +337,14 @@ class PlanningPoker {
         const container = document.getElementById('participantsList');
         container.innerHTML = '';
         
-        this.participants.forEach(participant => {
+        // Sort participants: hosts first, then others
+        const sortedParticipants = Array.from(this.participants.values()).sort((a, b) => {
+            if (a.isHost && !b.isHost) return -1;
+            if (!a.isHost && b.isHost) return 1;
+            return 0; // Keep original order for participants with same host status
+        });
+        
+        sortedParticipants.forEach(participant => {
             const item = document.createElement('div');
             item.className = 'participant-item';
             
@@ -370,10 +377,7 @@ class PlanningPoker {
             
             item.innerHTML = `
                 <span class="participant-name ${canThrowBoomerang ? 'throwable' : ''}">${this.escapeHtml(participant.name)}</span>
-                <span class="participant-status ${participant.hasVoted ? 'voted' : ''}">
-                    ${participant.isHost ? '主持人' : ''}
-                    ${participant.hasVoted ? '已投票' : '等待中'}
-                </span>
+                <span class="participant-vote-status">${participant.hasVoted ? '✅' : ''}</span>
             `;
             
             container.appendChild(item);

@@ -306,10 +306,6 @@ body {
     font-weight: 600;
 }
 
-.participant-item.self .participant-status {
-    background: #81e6d9;
-    color: #234e52;
-}
 
 /* Combined styles for self + host */
 .participant-item.self.host {
@@ -325,27 +321,19 @@ body {
     font-weight: 700;
 }
 
-.participant-item.self.host .participant-status {
-    background: #d6bcfa;
-    color: #44337a;
-}
 
 .participant-name {
     font-weight: 500;
     color: #2d3748;
 }
 
-.participant-status {
-    font-size: 0.8rem;
-    color: #718096;
-    background: #e2e8f0;
-    padding: 4px 8px;
-    border-radius: 12px;
-}
-
-.participant-status.voted {
-    background: #c6f6d5;
-    color: #22543d;
+.participant-vote-status {
+    font-size: 1.2rem;
+    color: #48bb78;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
 }
 
 /* Hit effect for participants */
