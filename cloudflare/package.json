@@ -1,0 +1,29 @@
+{
+  "name": "pokerphase-cloudflare",
+  "version": "1.0.0",
+  "description": "PokerPhase Cloudflare - Workers + Durable Objects version for global edge deployment",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "node build-assets.js",
+    "dev": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
+    "preview": "npm run build && wrangler deploy --env preview",
+    "tail": "wrangler tail"
+  },
+  "keywords": [
+    "pokerphase",
+    "planning-poker",
+    "agile",
+    "scrum",
+    "estimation",
+    "cloudflare-workers",
+    "durable-objects",
+    "websocket"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

@@ -25,3 +25,7 @@ logs
 
 # Claude Code settings
 .claude/
+CLAUDE.md
+
+# Cloudflare Workers configuration
+cloudflare/wrangler.toml
